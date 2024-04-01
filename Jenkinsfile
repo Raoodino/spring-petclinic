@@ -3,6 +3,14 @@ node {
     checkout scm
   }
 
+
+  stage('SonarQube Analysis') {
+    withSonarQubeEnv('sonar') {
+      // Use the container name as the hostname for SonarQube server
+      sh "./gradlew sonar"
+    }
+  }
+
   stage('Build with Gradle') {
     steps {
       script {
@@ -13,12 +21,6 @@ node {
     }
   }
   
-  stage('SonarQube Analysis') {
-    withSonarQubeEnv('sonar') {
-      // Use the container name as the hostname for SonarQube server
-      sh "./gradlew sonar"
-    }
-  }
   
   stage('Execute Jar') {
     steps {
