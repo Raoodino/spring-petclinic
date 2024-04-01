@@ -19,8 +19,8 @@ version = '3.2.0'
 
 sonar {
   properties {
-    property "sonar.projectKey", "app_analysis2"
-    property "sonar.projectName", "app_analysis2"
+    property "sonar.projectKey", "pet-clinic-analysis"
+    property "sonar.projectName", "pet-clinic-analysis"
   }
 }
 
