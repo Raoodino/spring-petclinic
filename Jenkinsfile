@@ -7,7 +7,7 @@ node {
   }
   stage('SonarQube Analysis') {
     withSonarQubeEnv('sonar') {
-      sh "./gradlew sonar --stacktrace"
+      sh "./gradlew sonarqube -Dsonar.host.url=http://sonarqube:9000"
     }
   }
 }
