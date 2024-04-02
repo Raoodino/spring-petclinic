@@ -1,21 +1,40 @@
-node {
-  // environment {
-  //       SONAR_HOST_URL = 'http://172.21.0.2:9000'
-  //   }
-  stage('SCM') {
-    checkout scm
-  }
-  // stage('Build JAR') {
-  //       // Assuming you're using Gradle to build the JAR
-  //       sh "./gradlew build"
-  // }
-  stage('SonarQube Analysis') {
-    withSonarQubeEnv('sonar') {
-      sh "./gradlew sonar -Dsonar.host.url=http://sonarqube:9000"
+pipeline {
+  agent any
+   environment {
+        _git_url = "https://github.com/Raoodino/spring-petclinic.git"
+        _git_branch = '*/main'            
     }
+    options {
+      timeout(time: 1, unit: 'HOURS') 
   }
-  // stage('Execute JAR') {
-  //     // Execute the JAR file from the Jenkins workspace directory
-  //     sh 'java -jar /var/jenkins_home/workspace/test1/build/libs/spring-petclinic-3.2.0.jar'
-  // }
+  tools {
+      gradle 'gradle'
+      git 'git'
+  }
+stages {
+        stage('Git Checkout') { 
+            steps    {
+                checkout([$class: 'GitSCM', branches: [[name: "${_git_branch}"]], extensions: [],userRemoteConfigs: [[credentialsId: "", url: "${_git_url}"]]])
+            }
+        }
+        stage('Maven Build') {
+            steps    {
+                sh '''
+                rm -f Jenkinsfile && chmod +x mvnw gradlew
+                ./gradlew build
+                '''
+            }
+        }
+        stage('SonarQube Analysis') {
+            steps    {	
+                script {
+                	  scannerHome = tool 'sonarqube'
+                }					  
+                withSonarQubeEnv('sonar') {
+                    sh "./gradlew sonar -Dsonar.host.url=http://sonarqube:9000"
+			    //sh """${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=${JOB_BASE_NAME} -Dsonar.projectName=${JOB_BASE_NAME} -Dsonar.sources=. """
+               }
+			 }
+        }
+  }
 }
