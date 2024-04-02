@@ -1,27 +1,29 @@
-version: "2.2"
+version: "3"
 
 services:
-  mysql:
-    image: mysql:8.2
+  jenkins:
+    image: jenkins/jenkins:jdk17  # Specify the latest weekly Jenkins image
     ports:
-      - "3306:3306"
-    environment:
-      - MYSQL_ROOT_PASSWORD=
-      - MYSQL_ALLOW_EMPTY_PASSWORD=true
-      - MYSQL_USER=petclinic
-      - MYSQL_PASSWORD=petclinic
-      - MYSQL_DATABASE=petclinic
+      - "8080:8080"  # Map Jenkins container port to host
+    networks:
+      - my_network
+
+  sonarqube:
+    image: sonarqube:latest
+    ports:
+      - "9000:9000"  # Map SonarQube container port to host
+    networks:
+      - my_network
     volumes:
-      - "./conf.d:/etc/mysql/conf.d:ro"
-    profiles:
-      - mysql
-  postgres:
-    image: postgres:16.1
-    ports:
-      - "5432:5432"
-    environment:
-      - POSTGRES_PASSWORD=petclinic
-      - POSTGRES_USER=petclinic
-      - POSTGRES_DB=petclinic
-    profiles:
-      - postgres
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+      - sonarqube_logs:/opt/sonarqube/logs
+
+networks:
+  my_network:
+
+volumes:
+  sonarqube_data:
+  sonarqube_extensions:
+  sonarqube_logs:
+
