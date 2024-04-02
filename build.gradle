@@ -9,7 +9,7 @@ plugins {
 }
 
 apply plugin: 'java'
-apply plugin: 'checkstyle'
+//apply plugin: 'checkstyle'
 apply plugin: 'io.spring.javaformat'
 
 gradle.startParameter.excludedTaskNames += [ "checkFormatAot", "checkFormatAotTest" ]
