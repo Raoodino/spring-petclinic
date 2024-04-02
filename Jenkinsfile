@@ -16,6 +16,6 @@ node {
   }
   stage('Execute JAR') {
       // Execute the JAR file from the Jenkins workspace directory
-      sh 'java -jar /var/jenkins_home/workspace/jarproject/build/libs/spring-petclinic-3.2.0.jar'
+      sh 'java -jar /var/jenkins_home/workspace/test1/build/libs/spring-petclinic-3.2.0.jar'
   }
 }
